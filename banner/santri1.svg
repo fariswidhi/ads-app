@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120" height="160" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+  <rect width="120" height="160" fill="#006400"/>
+  <circle cx="60" cy="50" r="30" fill="#FFD700"/>
+  <rect x="30" y="90" width="60" height="70" fill="#FFFFFF"/>
+  <text x="60" y="130" font-family="Arial" font-size="14" fill="#006400" text-anchor="middle">Santri Pria</text>
+</svg>
