@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catatan Keuangan AI - Catat Pengeluaran Otomatis</title>
+    <meta name="description"
+        content="Aplikasi catatan keuangan dengan AI yang membantu catat semua pengeluaran tanpa ribet. Download gratis sekarang!">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ==================== */
+        /* 1. HOOK SECTION */
+        /* ==================== */
+        .hook-section {
+            padding: 48px 0 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hook-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hook-emoji {
+            font-size: 56px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .hook-headline {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hook-subheadline {
+            font-size: 18px;
+            color: #94a3b8;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 18px 36px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                left: 100%;
+            }
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.5);
+        }
+
+        /* ==================== */
+        /* 2. VALIDASI MASALAH */
+        /* ==================== */
+        .problem-section {
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: center;
+            color: #e2e8f0;
+        }
+
+        .problem-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 0 24px;
+        }
+
+        .problem-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 16px;
+            color: #cbd5e1;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border-left: 4px solid #ef4444;
+        }
+
+        .problem-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        /* ==================== */
+        /* 3. SOLUSI SINGKAT */
+        /* ==================== */
+        .solution-section {
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .solution-text {
+            font-size: 20px;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        .solution-highlight {
+            color: #a5b4fc;
+            font-weight: 600;
+        }
+
+        /* ==================== */
+        /* 4. 3 FITUR UTAMA */
+        /* ==================== */
+        .features-section {
+            padding: 40px 0;
+        }
+
+        .features-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 0 20px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            flex-shrink: 0;
+        }
+
+        .feature-content h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .feature-content p {
+            font-size: 15px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        /* ==================== */
+        /* 5. BEFORE - AFTER */
+        /* ==================== */
+        .comparison-section {
+            padding: 40px 20px;
+        }
+
+        .comparison-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .comparison-card {
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        .comparison-card.before {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .comparison-card.after {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.05) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .comparison-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .comparison-header .icon {
+            font-size: 24px;
+        }
+
+        .comparison-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .comparison-card.before .comparison-header h3 {
+            color: #fca5a5;
+        }
+
+        .comparison-card.after .comparison-header h3 {
+            color: #86efac;
+        }
+
+        .comparison-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .comparison-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            color: #cbd5e1;
+        }
+
+        .comparison-list li::before {
+            content: '•';
+            font-size: 18px;
+        }
+
+        .comparison-card.before .comparison-list li::before {
+            color: #ef4444;
+        }
+
+        .comparison-card.after .comparison-list li::before {
+            color: #22c55e;
+        }
+
+        /* ==================== */
+        /* 6. SOCIAL PROOF */
+        /* ==================== */
+        .social-proof-section {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+
+        .stars {
+            font-size: 24px;
+            margin-bottom: 16px;
+            letter-spacing: 4px;
+        }
+
+        .testimonial-text {
+            font-size: 17px;
+            font-style: italic;
+            color: #e2e8f0;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .user-count {
+            font-size: 15px;
+            color: #94a3b8;
+        }
+
+        .user-count strong {
+            color: #a5b4fc;
+        }
+
+        /* ==================== */
+        /* 7. CTA KUAT */
+        /* ==================== */
+        .final-cta-section {
+            padding: 48px 20px;
+            text-align: center;
+            background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.1) 100%);
+            border-radius: 32px 32px 0 0;
+        }
+
+        .final-cta-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .cta-button.large {
+            width: 100%;
+            max-width: 320px;
+            padding: 20px 40px;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .cta-benefits {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .cta-benefit {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .cta-benefit .check {
+            color: #22c55e;
+        }
+
+        /* ==================== */
+        /* 8. FAQ */
+        /* ==================== */
+        .faq-section {
+            padding: 32px 20px 48px;
+        }
+
+        .faq-title {
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e2e8f0;
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 16px 20px;
+            border-radius: 12px;
+        }
+
+        .faq-question {
+            font-size: 15px;
+            color: #cbd5e1;
+        }
+
+        .faq-answer {
+            font-size: 15px;
+            font-weight: 600;
+            color: #22c55e;
+        }
+
+        /* ==================== */
+        /* MID CTA */
+        /* ==================== */
+        .mid-cta {
+            padding: 32px 20px;
+            text-align: center;
+        }
+
+        /* ==================== */
+        /* RESPONSIVE */
+        /* ==================== */
+        @media (max-width: 380px) {
+            .hook-headline {
+                font-size: 28px;
+            }
+
+            .hook-subheadline {
+                font-size: 16px;
+            }
+
+            .cta-button {
+                padding: 16px 28px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 1. HOOK SECTION -->
+        <section class="hook-section">
+            <div class="hook-emoji">💸</div>
+            <h1 class="hook-headline">Uang Habis Terus, Padahal Gaji Cukup?</h1>
+            <p class="hook-subheadline">AI bantu catat semua pengeluaran tanpa ribet.</p>
+            <a href="#download" class="cta-button">
+                👉 Download Gratis Sekarang
+            </a>
+        </section>
+
+        <!-- 2. VALIDASI MASALAH -->
+        <section class="problem-section">
+            <h2 class="section-title">Pernah ngerasa gini?</h2>
+            <div class="problem-list">
+                <div class="problem-item">
+                    <span class="problem-icon">❌</span>
+                    <span>Catat manual tapi sering lupa</span>
+                </div>
+                <div class="problem-item">
+                    <span class="problem-icon">❌</span>
+                    <span>Uang kecil bocor tiap hari</span>
+                </div>
+                <div class="problem-item">
+                    <span class="problem-icon">❌</span>
+                    <span>Akhir bulan selalu kaget</span>
+                </div>
+                <div class="problem-item">
+                    <span class="problem-icon">❌</span>
+                    <span>Pengen nabung tapi gak pernah mulai</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SOLUSI SINGKAT -->
+        <section class="solution-section">
+            <p class="solution-text">
+                Sekarang <span class="solution-highlight">gak perlu ribet</span> catat keuangan.<br><br>
+                Tinggal scan struk atau input singkat, <span class="solution-highlight">AI yang urus semuanya</span>.
+            </p>
+        </section>
+
+        <!-- 4. 3 FITUR UTAMA -->
+        <section class="features-section">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📸</div>
+                    <div class="feature-content">
+                        <h3>Scan Struk Otomatis</h3>
+                        <p>Foto → langsung tercatat</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <div class="feature-content">
+                        <h3>AI Catat Pengeluaran</h3>
+                        <p>Tanpa repot input manual</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-content">
+                        <h3>Ringkasan Jelas & Rapi</h3>
+                        <p>Langsung tahu uang ke mana</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MID CTA -->
+        <div class="mid-cta">
+            <a href="#download" class="cta-button">
+                📲 Coba Sekarang - Gratis!
+            </a>
+        </div>
+
+        <!-- 5. BEFORE - AFTER -->
+        <section class="comparison-section">
+            <div class="comparison-wrapper">
+                <div class="comparison-card before">
+                    <div class="comparison-header">
+                        <span class="icon">😫</span>
+                        <h3>Sebelum Pakai Aplikasi</h3>
+                    </div>
+                    <ul class="comparison-list">
+                        <li>Keuangan berantakan</li>
+                        <li>Sering over budget</li>
+                        <li>Stres tiap akhir bulan</li>
+                    </ul>
+                </div>
+                <div class="comparison-card after">
+                    <div class="comparison-header">
+                        <span class="icon">😎</span>
+                        <h3>Sesudah Dibantu AI</h3>
+                    </div>
+                    <ul class="comparison-list">
+                        <li>Pengeluaran lebih rapi</li>
+                        <li>Lebih sadar kebiasaan boros</li>
+                        <li>Mulai mikir tabungan</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. SOCIAL PROOF -->
+        <section class="social-proof-section">
+            <div class="testimonial-card">
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <p class="testimonial-text">"Baru sadar uang kecil ternyata bikin boros. Sekarang lebih ke kontrol."</p>
+            </div>
+            <p class="user-count">Dipakai <strong>ribuan pengguna</strong> untuk catat keuangan harian</p>
+        </section>
+
+        <!-- 7. FINAL CTA -->
+        <section class="final-cta-section" id="download">
+            <h2 class="final-cta-title">📲 Download Gratis Sekarang</h2>
+            <a href="https://play.google.com/store/apps/details?id=id.larismedia.catatan_keuangan_ai"
+                class="cta-button large" id="downloadBtn">
+                ⬇️ Install Aplikasi
+            </a>
+            <div class="cta-benefits">
+                <span class="cta-benefit"><span class="check">✓</span> Gratis</span>
+                <span class="cta-benefit"><span class="check">✓</span> Tanpa kartu kredit</span>
+                <span class="cta-benefit"><span class="check">✓</span> Mudah dipakai</span>
+            </div>
+        </section>
+
+        <!-- 8. FAQ -->
+        <section class="faq-section">
+            <h3 class="faq-title">Pertanyaan Singkat</h3>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <span class="faq-question">Gratis?</span>
+                    <span class="faq-answer">Ya ✓</span>
+                </div>
+                <div class="faq-item">
+                    <span class="faq-question">Ribet?</span>
+                    <span class="faq-answer">Tidak ✓</span>
+                </div>
+                <div class="faq-item">
+                    <span class="faq-question">Aman?</span>
+                    <span class="faq-answer">Data terlindungi ✓</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            });
+        });
+
+        // Download button with counter
+        document.getElementById('downloadBtn').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Increment download count via AJAX
+            fetch('../counter.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=increment'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Download count updated:', data.count);
+                    // Redirect to Play Store
+                    window.location.href = 'https://play.google.com/store/apps/details?id=id.larismedia.catatankeuangan';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Still redirect even if counter fails
+                    window.location.href = 'https://play.google.com/store/apps/details?id=id.larismedia.catatankeuangan';
+                });
+        });
+    </script>
+</body>
+
+</html>
