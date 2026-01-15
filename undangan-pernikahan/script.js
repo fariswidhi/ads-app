@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const musicToggle = document.getElementById('musicToggle');
 
     // Wedding Date - Update this!
-    const weddingDate = new Date('2025-02-15T08:00:00');
+    const weddingDate = new Date('2026-03-31T08:00:00');
 
     // ===================================
     // OPEN INVITATION
